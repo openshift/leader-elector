@@ -1,14 +1,13 @@
-FROM rhel7:7-released as builder
+FROM openshift/origin-release:golang-1.10 AS builder
 
-ADD election /root/go/src/k8s.io/contrib/election
-RUN yum install -y golang git \
- && cd ~/go/src/k8s.io/contrib/election \
+ADD election /go/src/k8s.io/contrib/election
+RUN cd /go/src/k8s.io/contrib/election \
  && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-w' -o leader-elector example/main.go
 
 # Regular image
-FROM rhel7:7-released
+FROM openshift/origin-base:v4.0
 
-COPY --from=builder /root/go/src/k8s.io/contrib/election/leader-elector /usr/bin/
+COPY --from=builder /go/src/k8s.io/contrib/election/leader-elector /usr/bin/
 
 USER 1001
 
