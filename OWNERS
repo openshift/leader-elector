@@ -6,3 +6,5 @@ approvers:
 - MaysaMacedo
 - yboaron
 
+component: "Networking"
+subcomponent: "kuryr"
