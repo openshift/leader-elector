@@ -1,11 +1,11 @@
-FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-golang-1.15-openshift-4.7 AS builder
+FROM registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.15-openshift-4.7 AS builder
 
 ADD election /go/src/k8s.io/contrib/election
 RUN cd /go/src/k8s.io/contrib/election \
  && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-w' -o leader-elector example/main.go
 
 # Regular image
-FROM registry.svc.ci.openshift.org/ocp/4.7:base
+FROM registry.ci.openshift.org/ocp/4.7:base
 
 COPY --from=builder /go/src/k8s.io/contrib/election/leader-elector /usr/bin/
 
